@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 // GET - Lấy chi tiết đơn hàng
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const order = await prisma.order.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         items: {
           include: {
@@ -38,9 +41,10 @@ export async function GET(
 // PUT - Cập nhật trạng thái đơn hàng
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const { status } = body;
 
@@ -52,7 +56,7 @@ export async function PUT(
     }
 
     const order = await prisma.order.update({
-      where: { id: params.id },
+      where: { id },
       data: { status },
       include: {
         items: {

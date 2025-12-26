@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/app/context/CartContext";
 
@@ -23,9 +23,16 @@ export default function CheckoutPage() {
     paymentMethod: "cod",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  if (cart.length === 0) {
-    router.push("/cart");
+  useEffect(() => {
+    setMounted(true);
+    if (cart.length === 0) {
+      router.push("/cart");
+    }
+  }, [cart.length, router]);
+
+  if (!mounted || cart.length === 0) {
     return null;
   }
 
@@ -65,7 +72,7 @@ export default function CheckoutPage() {
       const order = await response.json();
 
       // Clear cart and redirect with order ID
-      clearCart();
+    clearCart();
       router.push(`/order-success?id=${order.id}`);
     } catch (error: any) {
       console.error("Error creating order:", error);

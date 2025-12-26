@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 // GET - Lấy chi tiết sản phẩm
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const product = await prisma.product.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!product) {
@@ -31,9 +34,10 @@ export async function GET(
 // PUT - Cập nhật sản phẩm
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const {
       name,
@@ -48,7 +52,7 @@ export async function PUT(
     } = body;
 
     const product = await prisma.product.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(name && { name }),
         ...(price !== undefined && { price: parseInt(price) }),
@@ -77,11 +81,12 @@ export async function PUT(
 // DELETE - Xóa sản phẩm
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.product.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ message: 'Product deleted successfully' });
