@@ -5,7 +5,6 @@ export const runtime = "nodejs"
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export const dynamic = 'force-dynamic';
 
 // POST - Tạo yêu cầu lắp đặt mới
 export async function POST(request: NextRequest) {
