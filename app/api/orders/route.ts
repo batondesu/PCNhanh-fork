@@ -42,13 +42,13 @@ export async function POST(request: NextRequest) {
 
       // Tạo order items
       const orderItems = await Promise.all(
-        items.map((item: { productId: string; quantity: number; price: number }) =>
+        items.map((item: { productId: string; quantity: number; price: number | string }) =>
           tx.orderItem.create({
             data: {
               orderId: newOrder.id,
               productId: item.productId,
               quantity: item.quantity,
-              price: parseInt(item.price),
+              price: typeof item.price === 'string' ? parseInt(item.price) : item.price,
             },
           })
         )

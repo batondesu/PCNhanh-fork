@@ -21,7 +21,7 @@ async function main() {
         brand: product.brand || null,
         description: product.description,
         inStock: product.inStock,
-        specs: product.specs || null,
+        specs: product.specs || undefined,
       },
     })
   }
