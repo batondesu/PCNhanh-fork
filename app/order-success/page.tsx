@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -11,7 +11,7 @@ function formatPrice(price: number) {
   }).format(price);
 }
 
-export default function OrderSuccessPage() {
+function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("id");
   const [order, setOrder] = useState<any>(null);
@@ -51,14 +51,14 @@ export default function OrderSuccessPage() {
       <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-lg shadow-sm p-12">
           <div className="text-center mb-8">
-            <div className="text-6xl mb-6">✅</div>
-            <h1 className="text-3xl font-bold mb-4 text-gray-900">
-              Đặt hàng thành công!
-            </h1>
+          <div className="text-6xl mb-6">✅</div>
+          <h1 className="text-3xl font-bold mb-4 text-gray-900">
+            Đặt hàng thành công!
+          </h1>
             <p className="text-gray-600 mb-4">
-              Cảm ơn bạn đã đặt hàng. Chúng tôi sẽ liên hệ với bạn trong thời gian
-              sớm nhất để xác nhận đơn hàng.
-            </p>
+            Cảm ơn bạn đã đặt hàng. Chúng tôi sẽ liên hệ với bạn trong thời gian
+            sớm nhất để xác nhận đơn hàng.
+          </p>
             {order && (
               <div className="mt-6 p-4 bg-primary-50 rounded-lg">
                 <p className="text-sm text-gray-600 mb-1">Mã đơn hàng:</p>
@@ -175,6 +175,22 @@ export default function OrderSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OrderSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 py-12 px-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+            <div className="text-xl font-semibold text-gray-900">Đang tải...</div>
+          </div>
+        </div>
+      </div>
+    }>
+      <OrderSuccessContent />
+    </Suspense>
   );
 }
 
